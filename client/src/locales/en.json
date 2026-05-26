@@ -1,0 +1,48 @@
+{
+  "nav": {
+    "home": "Home",
+    "tech": "Our Technology",
+    "bulk": "Bulk Orders",
+    "quote": "Get A Quote"
+  },
+  "hero": {
+    "badge": "⚡ Premium Bio-Stimulants & Fertilizers",
+    "title1": "Rooted in Tradition.",
+    "title2": "Engineered for Yield.",
+    "desc": "Hariom High-Tech bridges biological soil nutrition with modern precision agriculture. Our formulas are optimized to accelerate root microbial ecosystems, driving massive output safely.",
+    "btn_wholesale": "Inquire for Wholesale",
+    "btn_tech": "Explore the Tech",
+    "sticker": "100% Organic"
+  },
+  "form": {
+    "heading": "Commercial Dealership & Bulk Supply",
+    "desc": "Are you looking for direct farm truckloads, custom manufacturing specifications, or setting up a distribution network in your region?",
+    "title": "Request Technical Quote",
+    "name": "Your Full Name *",
+    "farm": "Farm / Enterprise Name",
+    "phone": "Phone Number *",
+    "land": "Cultivation Land (Acres)",
+    "msg": "Provide detailed specifications of your soil type, crops, or volume requirements... *",
+    "btn": "Request Institutional Pricing"
+  },
+  "features": {
+    "subtitle": "Scientific Formulation",
+    "title": "The High-Tech Organic Advantage",
+    "card1_title": "Microbial Activation",
+    "card1_desc": "Enriched with specific lab-tested microbial isolates that unlock fixed mineral phosphorus naturally inside your soil.",
+    "card2_title": "Controlled Release Rate",
+    "card2_desc": "Advanced organic pelletizing ensures stable distribution curves over extended months without risk of crop nutrient burning.",
+    "card3_title": "Measurable Crop Response",
+    "card3_desc": "Formulated specifically to maximize chlorophyll production, delivering stronger leaf density and clean weight increases."
+  },
+  "process": {
+    "subtitle": "Natural Bio-Engineers",
+    "title": "Premium Vermicompost Production",
+    "desc1": "At Hariom High-Tech, we don't use artificial chemicals. We partner with thousands of live earthworms to biologically break down raw organic mass into pure, nutrient-dense humus. This technical process multiplies soil microbial activity and makes macro-nutrients instantly bio-available for plant roots."
+  },
+  "gallery": {
+    "subtitle": "Real-Time Impact",
+    "title": "Production & Field Realities",
+    "desc": "A look inside our structured vermicomposting methodology and the real agricultural returns generated for our network of commercial farmers."
+  }
+}

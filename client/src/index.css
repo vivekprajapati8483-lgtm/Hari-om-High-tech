@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    /* Replace with your favorite tone: */
+    background-color: #F4F4F0; /* Clean, premium matte off-white/beige */
+  }
+}
