@@ -6,14 +6,18 @@ import en from './locales/en.json';
 import mr from './locales/mr.json';
 
 i18n
-  .use(LanguageDetector) // Automatically detects user browser language
+  .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources: {
       en: { translation: en },
       mr: { translation: mr }
     },
-    fallbackLng: 'en', // Default language if detection fails
+    fallbackLng: 'mr', // Default language if detection fails/on first load
+    detection: {
+      order: ['querystring', 'cookie', 'localStorage', 'sessionStorage', 'htmlTag'],
+      caches: ['localStorage', 'cookie']
+    },
     interpolation: { escapeValue: false }
   });
 
