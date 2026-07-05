@@ -6,7 +6,29 @@ export default function Navbar() {
   const isMarathi = i18n.language.startsWith('mr');
 
   return (
-    <nav className="bg-white/70 backdrop-blur-md sticky top-0 z-50 border-b border-emerald-100/40 subtle-shadow">
+    <>
+      {/* Top Contact Bar */}
+      <div className="bg-[#041611] text-emerald-300 py-2.5 px-6 text-xs border-b border-emerald-900/50">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+            <span className="text-gray-400 uppercase tracking-wider font-semibold">
+              {isMarathi ? "संपर्क:" : "Contact Us:"}
+            </span>
+            <a href="tel:+919763817635" className="hover:text-white font-bold transition flex items-center gap-1.5 bg-emerald-900/30 px-2.5 py-1 rounded-md border border-emerald-500/20">
+              <span className="text-[10px]">📞</span> +91 97638 17635
+            </a>
+            <a href="tel:+917588127431" className="hover:text-white font-bold transition flex items-center gap-1.5 bg-emerald-900/30 px-2.5 py-1 rounded-md border border-emerald-500/20">
+              <span className="text-[10px]">📞</span> +91 75881 27431
+            </a>
+          </div>
+          <div className="hidden md:flex items-center space-x-2 font-medium text-emerald-400">
+            <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
+            <span>{isMarathi ? "१००% सेंद्रिय गांडूळ खत" : "100% Organic Vermicompost"}</span>
+          </div>
+        </div>
+      </div>
+
+      <nav className="bg-white/70 backdrop-blur-md sticky top-0 z-50 border-b border-emerald-100/40 subtle-shadow">
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         
         {/* Brand Logo with a modern dot indicator */}
@@ -56,5 +78,6 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
+    </>
   );
 }
