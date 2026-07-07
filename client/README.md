@@ -1,16 +1,31 @@
-# React + Vite
+# Hariom High-Tech Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + Vite website for Hariom High-Tech Organic Fertilizers.
 
-Currently, two official plugins are available:
+## Scripts
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+npm run dev
+npm run build
+npm run preview
+```
 
-## React Compiler
+## Inquiry form
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The inquiry form is deploy-safe:
 
-## Expanding the ESLint configuration
+- If `VITE_INQUIRY_API_URL` is set, the form posts JSON to that endpoint.
+- If `VITE_INQUIRY_API_URL` is empty, the form opens a prepared WhatsApp inquiry message.
+- `VITE_WHATSAPP_NUMBER` controls the WhatsApp destination number and defaults to `919763817635`.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Example environment values live in `.env.example`.
+
+Expected API response shape:
+
+```json
+{
+  "success": true
+}
+```
+
+If the API responds with `{ "success": false, "message": "..." }` or returns a failed HTTP status, the form shows a WhatsApp fallback link.

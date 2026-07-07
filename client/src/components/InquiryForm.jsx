@@ -1,59 +1,122 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+const DEFAULT_WHATSAPP_NUMBER = '919763817635';
+const INQUIRY_API_URL = import.meta.env.VITE_INQUIRY_API_URL?.trim() || '';
+const WHATSAPP_NUMBER = (import.meta.env.VITE_WHATSAPP_NUMBER || DEFAULT_WHATSAPP_NUMBER).replace(/\D/g, '');
+
+const createEmptyFormData = () => ({
+  name: '',
+  company: '',
+  phone: '',
+  landSize: '',
+  district: '',
+  address: '',
+  requirements: ''
+});
+
+const buildWhatsAppMessage = (data) => {
+  const lines = [
+    'New Hariom High-Tech inquiry',
+    `Name: ${data.name}`,
+    data.company ? `Farm / Company: ${data.company}` : '',
+    `Phone: ${data.phone}`,
+    data.landSize ? `Land size: ${data.landSize} acres` : '',
+    `District: ${data.district}`,
+    `Address: ${data.address}`,
+    `Requirements: ${data.requirements}`
+  ];
+
+  return lines.filter(Boolean).join('\n');
+};
+
+const createWhatsAppUrl = (data) => (
+  `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildWhatsAppMessage(data))}`
+);
+
 export default function Inquiry() {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
   const isMarathi = i18n.language.startsWith('mr');
 
-  const [formData, setFormData] = useState({
-    name: '',
-    company: '',
-    phone: '',
-    landSize: '',
-    district: '',      
-    address: '',       
-    requirements: ''
+  const [formData, setFormData] = useState(createEmptyFormData);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [status, setStatus] = useState({
+    type: '',
+    message: '',
+    actionUrl: ''
   });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (status.message) {
+      setStatus({ type: '', message: '', actionUrl: '' });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
+    const whatsappUrl = createWhatsAppUrl(formData);
+
+    if (!INQUIRY_API_URL) {
+      window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+      setStatus({
+        type: 'info',
+        message: isMarathi
+          ? 'तुमची चौकशी WhatsApp मध्ये तयार आहे. कृपया तिथे Send दाबा.'
+          : 'Your inquiry is ready in WhatsApp. Please press Send there.',
+        actionUrl: whatsappUrl
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    setStatus({ type: '', message: '', actionUrl: '' });
+
     try {
-      // Pointing directly to our active Express.js port 5000 gateway route
-      const response = await fetch('http://localhost:5000/api/inquiry', {
+      const response = await fetch(INQUIRY_API_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          source: 'website-inquiry',
+          submittedAt: new Date().toISOString()
+        }),
       });
 
-      const data = await response.json();
+      const data = await response.json().catch(() => ({}));
 
-      if (data.success) {
-        alert(isMarathi ? "तुमची चौकशी यशस्वीरित्या नोंदवली गेली आहे!" : "Your inquiry has been successfully recorded!");
-        // Clear out state parameters upon complete storage resolution
-        setFormData({
-          name: '',
-          company: '',
-          phone: '',
-          landSize: '',
-          district: '',
-          address: '',
-          requirements: ''
-        });
-      } else {
-        alert(data.message || "Something went wrong.");
+      if (!response.ok || data.success === false) {
+        throw new Error(data.message || 'Inquiry submission failed.');
       }
+
+      setStatus({
+        type: 'success',
+        message: isMarathi
+          ? 'तुमची चौकशी यशस्वीरित्या नोंदवली गेली आहे. आमची टीम लवकरच संपर्क करेल.'
+          : 'Your inquiry has been recorded successfully. Our team will contact you soon.',
+        actionUrl: ''
+      });
+      setFormData(createEmptyFormData());
     } catch (error) {
-      console.error("API Communication Failure:", error);
-      alert(isMarathi ? "सर्व्हरशी संपर्क होऊ शकला नाही." : "Could not connect to the backend server.");
+      console.error('Inquiry submission failed:', error);
+      setStatus({
+        type: 'error',
+        message: isMarathi
+          ? 'चौकशी पाठवताना अडचण आली. खालील WhatsApp लिंक वापरून थेट चौकशी पाठवा.'
+          : 'We could not submit the form. Use the WhatsApp link below to send the inquiry directly.',
+        actionUrl: whatsappUrl
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
+  const statusClassName = {
+    success: 'bg-emerald-50 border-emerald-200 text-emerald-800',
+    error: 'bg-red-50 border-red-200 text-red-700',
+    info: 'bg-sky-50 border-sky-200 text-sky-800'
+  }[status.type] || 'bg-gray-50 border-gray-200 text-gray-700';
 
   return (
     <section id="inquiry" className="py-24 bg-gradient-to-b from-[#041611] via-[#06221a] to-[#041611] relative overflow-hidden">
@@ -197,12 +260,35 @@ export default function Inquiry() {
                 ></textarea>
               </div>
 
+              {status.message && (
+                <div
+                  role="status"
+                  aria-live="polite"
+                  className={`${statusClassName} rounded-xl border px-4 py-3 text-left text-sm leading-relaxed`}
+                >
+                  <p>{status.message}</p>
+                  {status.actionUrl && (
+                    <a
+                      href={status.actionUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-2 inline-flex font-bold underline underline-offset-4"
+                    >
+                      {isMarathi ? 'WhatsApp उघडा' : 'Open WhatsApp Inquiry'}
+                    </a>
+                  )}
+                </div>
+              )}
+
               {/* Action Button */}
-              <button 
-                type="submit" 
-                className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-all duration-300 text-sm tracking-wide mt-2"
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={`w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-all duration-300 text-sm tracking-wide mt-2 ${isSubmitting ? 'cursor-wait opacity-75' : ''}`}
               >
-                {isMarathi ? "किंमत पत्रकासाठी विनंती करा" : "Submit Request For Pricing"}
+                {isSubmitting
+                  ? (isMarathi ? 'पाठवत आहे...' : 'Sending Request...')
+                  : (isMarathi ? "किंमत पत्रकासाठी विनंती करा" : "Submit Request For Pricing")}
               </button>
 
             </form>
